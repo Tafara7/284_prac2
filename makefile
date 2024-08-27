@@ -1,5 +1,5 @@
 ASM_SOURCES := $(wildcard *.asm)
-C_TEST_SOURCES := $(wildcard *.c)
+C_TEST_SOURCES := $(wildcard *.c) wrapper.c
 OBJ_DIR := obj
 BIN_DIR := bin
 EXECUTABLE := $(BIN_DIR)/test
@@ -15,7 +15,7 @@ $(EXECUTABLE): $(ASM_OBJECTS) $(C_TEST_OBJECTS)
 $(OBJ_DIR)/%.o: %.asm
 	yasm -f elf64 -g dwarf2 $< -o $@
 
-$(OBJ_DIR)/%.o: %.c
+$(OBJ_DIR)/%.o: %.c	
 	gcc -g -m64 -c $< -o $@
 
 $(OBJ_DIR):
