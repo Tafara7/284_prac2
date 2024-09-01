@@ -1,28 +1,34 @@
 section .data
-    extern call_strtof
-    float_zero: dd 0.0
+    global convertStringToFloat
+    errno dd 0
+
+section .bss
+    endPtr resq 1
 
 section .text
-    global convertStringToFloat
+    extern strtof
+    extern __errno_location
 
 convertStringToFloat:
-  
-    push rbp
-    mov rbp, rsp
 
-    call call_strtof
+    xorps xmm0, xmm0
 
-    ; check if conversion worked
+    ; Call strtof
+    lea rsi, [endPtr]  
+    mov rdi, rdi       
+    call strtof
 
-    pxor xmm1, xmm1          ; Set xmm1 to 0.0 (more efficient than movaps)
-    ucomiss xmm0, xmm1       ; Compare xmm0 with 0.0
-    jne .conversion_success  ; If not equal (zero), conversion succeeded
+    ; Store the result in xmm0
+    movaps xmm0, xmm0
 
-  
-    movss xmm0, [float_zero] ; Load 0.0 into xmm0
+    call __errno_location
+    mov rax, [rax]
+    test eax, eax      
+    jnz .error         ;
 
-.conversion_success:
+    ; Return the result
+    ret
 
-    pop rbp
-
+.error:
+    xorps xmm0, xmm0
     ret
