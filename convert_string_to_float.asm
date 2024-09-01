@@ -1,35 +1,35 @@
-    ; ==========================
-    ; Group member 01: Tinotenda_Chirozvi_22547747
-    ; Group member 02: Tafara_Hwata_22565991
-    ; Group member 03: Devan_Dewet_05169098
-    ; ==========================
+    section .data
+        extern call_strtof  ;
+        float_zero: dd 0.0  ; 
+
+    section .text
+        global convertStringToFloat
+
+    convertStringToFloat:
+
+        ; Set up the stack frame
+        push rbp                ; Save base pointer
+        mov rbp, rsp            ; Set stack pointer as  new base pointer
+
+    
+        mov rdi, [rbp+16]       ; Move the string pointer (str) into rdi
+        xor rax, rax            ; Clear rax 
 
 
-section .data
-    extern call_strtof
-    float_zero: dd 0.0
+        call call_strtof       
 
-section .text
-    global convertStringToFloat
+        ; Check if the conversion succeeded
 
-convertStringToFloat:
-    push rbp
-    mov rbp, rsp
+        movaps xmm1, [float_zero] ; Load 0.0 into xmm1
+        ucomiss xmm0, xmm1      ; Compare xmm0 with xmm1 (0.0)
+        jne .conversion_success ; If not equal (zero), conversion succeeded
 
-    ; Directly load address into rdi
-    mov rdi, [rbp+16]
+        ; Handle failure
+        movss xmm0, [float_zero] ; Load 0.0 into xmm0
 
-    xor rax, rax
-    call call_strtof
+    .conversion_success:
+        ; Clean up
+        mov rsp, rbp            ; Restore stack pointer
+        pop rbp                 ; Restore base pointer
 
-    ; Check conversion
-    movaps xmm1, [float_zero]
-    ucomiss xmm0, xmm1
-    jne .conversion_success
-
-    movss xmm0, [float_zero]
-
-.conversion_success:
-    mov rsp, rbp
-    pop rbp
-    ret
+        ret                     ;
