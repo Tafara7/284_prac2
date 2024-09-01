@@ -8,16 +8,14 @@ extern float call_strtof(const char* str);
 
 int main() {
 
-     const char *testStr = "32.133";
+    //Task 1
+    
+    const char *testStr = "32.133";
     float result = convertStringToFloat(testStr);
     printf("Test String: %s\n", testStr);
     printf("Converted Float: %f\n", result);
 
-    // Test strtof directly
-    const char *str = "32.133";
-    float value = strtof(str, NULL);
-    printf("Test String: %s\n", str);
-    printf("Converted Float: %f\n", value); 
+   
 
     // int numFloats;
     // float *floats = extractAndConvertFloats(&numFloats);
